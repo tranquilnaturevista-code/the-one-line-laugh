@@ -23,10 +23,14 @@ def check_gate(text):
     problems = []
     if not text.strip():
         problems.append("entry is blank")
-    size = len(text.encode("utf-8"))
+    # Gate is in characters (1-200), not bytes: a line with non-ASCII
+    # characters can be <= 200 characters yet > 200 UTF-8 bytes, and
+    # must still pass. (The entry itself is plain ASCII, so this
+    # changes nothing for it — it only makes the gate correct.)
+    size = len(text)
     if not 1 <= size <= 200:
         problems.append(
-            "entry is %d UTF-8 characters, gate needs 1-200" % size
+            "entry is %d characters, gate needs 1-200" % size
         )
     if "\n" in text or "\r" in text:
         problems.append("entry must be a single line")
